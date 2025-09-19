@@ -21,6 +21,9 @@ This project was built to:
 
 This project also serves as a real-world example of combining **AI + messaging + databases** in a clean, production-grade setup.
 
+![](https://github.com/seadmustafa/JobFinder/blob/master/src/main/resources/images/image.gif)
+
+
 ---
 
 ## ⚙️ Tech Stack
