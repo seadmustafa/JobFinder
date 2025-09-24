@@ -21,6 +21,94 @@ This project was built to:
 
 This project also serves as a real-world example of combining **AI + messaging + databases** in a clean, production-grade setup.
 
+### 📊 Diagram
+
+``` mermaid
+flowchart TB
+    %% Application entry
+    Application["JobfinderApplication"]:::config
+    click Application "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/JobfinderApplication.java"
+
+    %% Presentation Layer
+    subgraph "Presentation Layer"
+        Controller["JobController"]:::controller
+        click Controller "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/controller/JobController.java"
+    end
+
+    %% Business Layer
+    subgraph "Business Layer"
+        FinderService["JobFinderService"]:::service
+        click FinderService "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/service/JobFinderService.java"
+        ScrapingService["WebScrapingService"]:::service
+        click ScrapingService "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/service/WebScrapingService.java"
+        AnalysisService["JobAnalysisService"]:::service
+        click AnalysisService "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/service/JobAnalysisService.java"
+        WhatsAppService["WhatsAppService"]:::service
+        click WhatsAppService "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/service/WhatsAppService.java"
+    end
+
+    %% Data Access Layer
+    subgraph "Data Access Layer"
+        Repository["JobRepository"]:::repository
+        click Repository "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/repository/JobRepository.java"
+        Entity["Job"]:::entity
+        click Entity "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/entity/Job.java"
+        DB[(PostgreSQL)]:::db
+    end
+
+    %% Integration Layer
+    subgraph "Integration Layer"
+        ChatClient["ChatClient"]:::ai
+        click ChatClient "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/ai/ChatClient.java"
+        Prompt["Prompt"]:::ai
+        click Prompt "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/ai/Prompt.java"
+        Response["ChatResponse"]:::ai
+        click Response "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/ai/ChatResponse.java"
+        Config["OpenApiConfig"]:::config
+        click Config "https://github.com/seadmustafa/jobfinder/blob/master/src/main/java/com/ai/finder/config/OpenApiConfig.java"
+        Props["application.properties"]:::config
+        click Props "https://github.com/seadmustafa/jobfinder/blob/master/src/main/resources/application.properties"
+    end
+
+    %% External Systems
+    JobBoards["Job Boards"]:::external
+    OpenAI["OpenAI API"]:::external
+    TwilioAPI["Twilio WhatsApp API"]:::external
+    UserWhatsApp["User WhatsApp Client"]:::external
+
+    %% Relationships
+    Application -->|starts| Controller
+    Controller -->|trigger| FinderService
+    FinderService -->|scrape| ScrapingService
+    ScrapingService -->|data| Repository
+    Repository -->|save/read| DB
+    FinderService -->|raw data| AnalysisService
+    AnalysisService -->|build prompt| Prompt
+    AnalysisService -->|send request| ChatClient
+    ChatClient -->|call API| OpenAI
+    OpenAI -->|response| ChatClient
+    ChatClient -->|return summary| Response
+    FinderService -->|summary| WhatsAppService
+    WhatsAppService -->|send message| TwilioAPI
+    TwilioAPI -->|deliver| UserWhatsApp
+    Controller -->|docs| Config
+
+    %% External connections
+    ScrapingService -->|fetch| JobBoards
+
+    %% Styles
+    classDef controller fill:#ADD8E6,stroke:#333,stroke-width:1px
+    classDef service fill:#87CEFA,stroke:#333,stroke-width:1px
+    classDef repository fill:#FFD580,stroke:#333,stroke-width:1px
+    classDef entity fill:#FFE4B5,stroke:#333,stroke-width:1px
+    classDef ai fill:#D8BFD8,stroke:#333,stroke-width:1px
+    classDef config fill:#D3D3D3,stroke:#333,stroke-width:1px
+    classDef db fill:#FFA500,stroke:#333,stroke-width:1px,shape:cylinder
+    classDef external fill:#98FB98,stroke:#333,stroke-width:1px
+```
+
+### 🎥 Live Presentation 
+
 ![](https://github.com/seadmustafa/JobFinder/blob/master/src/main/resources/images/image.gif)
 
 
